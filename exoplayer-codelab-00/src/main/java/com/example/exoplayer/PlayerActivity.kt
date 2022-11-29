@@ -19,10 +19,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exoplayer.databinding.ActivityPlayerBinding
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 
 /**
- * A fullscreen activity to play audio or video streams.
+ * オーディオまたはビデオストリームを再生するためのフルスクリーンアクティビティです。
  */
 class PlayerActivity : AppCompatActivity() {
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
@@ -41,6 +42,10 @@ class PlayerActivity : AppCompatActivity() {
             .build()
             .also { exoPlayer ->
                 binding.playerView.player = exoPlayer
+
+                //mediaItemは色々なタイプ(mp4,mp3...)がある。再生したいコンテンツ。
+                val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
+                exoPlayer.setMediaItem(mediaItem)
             }
     }
 }
