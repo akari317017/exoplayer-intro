@@ -3,4 +3,5 @@ apply from: "${project.rootDir}/common.gradle"
 dependencies {
     implementation libs.androidx.appcompat
     implementation libs.bundles.android.exoplayer
+    implementation libs.android.viewbinding
 }

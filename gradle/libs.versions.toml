@@ -11,6 +11,7 @@ androidxAppcompat = "1.4.1"
 androidxMultidex = "2.0.1"
 
 exoplayer = "2.18.2"
+viewbinding = "4.0.1"
 
 
 [libraries]
@@ -22,7 +23,8 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 android-exoplayer-core = { module = "com.google.android.exoplayer:exoplayer-core", version.ref = "exoplayer" }
 android-exoplayer-dash = { module = "com.google.android.exoplayer:exoplayer-dash", version.ref = "exoplayer" }
 android-exoplayer-ui = { module = "com.google.android.exoplayer:exoplayer-ui", version.ref = "exoplayer" }
+android-viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "viewbinding" }
 
 [bundles]
-android-exoplayer=["android-exoplayer-core","android-exoplayer-dash","android-exoplayer-ui"]
+android-exoplayer = ["android-exoplayer-core", "android-exoplayer-dash", "android-exoplayer-ui"]
 
