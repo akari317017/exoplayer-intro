@@ -10,6 +10,7 @@ gradleVersion = "7.1.0"
 androidxAppcompat = "1.4.1"
 androidxMultidex = "2.0.1"
 
+androidxMedia3 = "1.0.0-alpha03"
 viewbinding = "4.0.1"
 
 [libraries]
@@ -19,3 +20,11 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidxMultidex" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
 android-viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "viewbinding" }
+
+#bundles:androidx-exoplayer
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androidxMedia3" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "androidxMedia3" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "androidxMedia3" }
+
+[bundles]
+androidx-exoplayer = ["androidx-media3-exoplayer", "androidx-media3-ui", "androidx-media3-exoplayer-dash"]
