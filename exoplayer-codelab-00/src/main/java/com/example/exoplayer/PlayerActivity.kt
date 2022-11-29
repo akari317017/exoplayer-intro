@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.example.exoplayer.databinding.ActivityPlayerBinding
 
 /**
@@ -66,7 +67,12 @@ class PlayerActivity : AppCompatActivity() {
      * そのため次のmediaItemに映った時にbufferingSpinnerが出ない
      */
     private fun initializePlayer() {
+        val trackSelector = DefaultTrackSelector(this).apply {
+            //標準画質以下のトラックのみを選択するようにtrackSelectorに指示
+            setParameters(buildUponParameters().setMaxVideoSizeSd())
+        }
         player = ExoPlayer.Builder(this)
+            .setTrackSelector(trackSelector)
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
