@@ -8,7 +8,11 @@ minSdkVersion = "16"
 gradleVersion = "7.1.0"
 
 androidxAppcompat = "1.4.1"
+androidxMultidex = "2.0.1"
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
+
+#build.gradle(app)
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidxMultidex" }
