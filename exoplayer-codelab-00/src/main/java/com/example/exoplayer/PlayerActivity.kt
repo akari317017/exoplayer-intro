@@ -42,6 +42,17 @@ class PlayerActivity : AppCompatActivity() {
      */
     private var player: ExoPlayer? = null
 
+    /**
+     * 以下の３つの変数は中断された位置から再生を再開するために使う。
+     * playWhenReady -> 再生/一時停止の状態
+     * playbackPosition -> 再生位置
+     * currentItem -> mediaItemのindex、どのmediaItemかということだと思う。ちょっとあってるか分からない。
+     * https://exoplayer.dev/doc/reference/com/google/android/exoplayer2/Timeline.html をちゃんと見とく
+     */
+    private var playWhenReady = true
+    private var currentItem = 0
+    private var playbackPosition = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -70,6 +81,27 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        /**
+         * APIレベル24以下ではonStopが呼び出される保証がないため、onPauseでできるだけ早くreleaseする必要がある
+         */
+        if (Util.SDK_INT < Build.VERSION_CODES.N) {
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        /**
+         * APIレベル24以上では、onStopが呼び出されることが保証される
+         * pauseではアクティビティが引き続き表示されるため、onStopまで待ってからrelease
+         */
+        if (Util.SDK_INT >= Build.VERSION_CODES.N) {
+            releasePlayer()
+        }
+    }
+
     private fun initializePlayer() {
         player = ExoPlayer.Builder(this)
             .build()
@@ -80,6 +112,17 @@ class PlayerActivity : AppCompatActivity() {
                 val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
                 exoPlayer.setMediaItem(mediaItem)
             }
+    }
+
+    private fun releasePlayer() {
+        player?.run {
+            playbackPosition = currentPosition
+            //無印exoのcurrentWindowIndexからのreplace
+            currentItem = currentMediaItemIndex
+            this@PlayerActivity.playWhenReady = this.playWhenReady
+            release()
+        }
+        player = null
     }
 
     private fun hideSystemUi() {
