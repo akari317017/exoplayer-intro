@@ -23,13 +23,12 @@ import com.example.exoplayer.databinding.ActivityPlayerBinding
  * A fullscreen activity to play audio or video streams.
  */
 class PlayerActivity : AppCompatActivity() {
-
-    private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {
+    private val binding by lazy(LazyThreadSafetyMode.NONE) {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(viewBinding.root)
+        setContentView(binding.root)
     }
 }
