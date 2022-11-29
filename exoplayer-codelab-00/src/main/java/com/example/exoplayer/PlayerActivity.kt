@@ -109,8 +109,14 @@ class PlayerActivity : AppCompatActivity() {
                 binding.playerView.player = exoPlayer
 
                 //mediaItemは色々なタイプ(mp4,mp3...)がある。再生したいコンテンツ。
-                val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
+                val itemUri = getString(R.string.media_url_mp3)
+                val mediaItem = MediaItem.fromUri(itemUri)
                 exoPlayer.setMediaItem(mediaItem)
+                //playWhenReadyの初期値をtrueにしてるのでアプリが初めて実行された時は自動的に再生が開始される。
+                exoPlayer.playWhenReady = playWhenReady
+                exoPlayer.seekTo(currentItem, playbackPosition)
+                //prepareで再生に必要なリソースを全て取得させる
+                exoPlayer.prepare()
             }
     }
 
