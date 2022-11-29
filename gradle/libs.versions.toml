@@ -4,19 +4,18 @@ kotlinVersion = "1.6.10"
 
 compileSdkVersion = "33"
 targetSdkVersion = "33"
-minSdkVersion = "16"
+minSdkVersion = "21"
 gradleVersion = "7.1.0"
 
 androidxAppcompat = "1.4.1"
 androidxMultidex = "2.0.1"
 
+viewbinding = "4.0.1"
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 
-#build.gradle(app)
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidxMultidex" }
-
-#codelab-00のbuild.gradle
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
+android-viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "viewbinding" }
