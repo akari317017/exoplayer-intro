@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    // Switch out the code lab step to jump to different points in the code lab
+    // コードラボのステップを切り替えて、コードラボの別のポイントにジャンプすることができます
     implementation project(':exoplayer-codelab-00')
     implementation libs.androidx.multidex
 }
