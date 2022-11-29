@@ -21,6 +21,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -76,11 +77,25 @@ class PlayerActivity : AppCompatActivity() {
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
+//                val uriResIdList = listOf(R.string.media_url_mp4, R.string.media_url_mp3)
+//                uriResIdList.forEach {
+//                    exoPlayer.addMediaItem(MediaItem.fromUri(getString(it)))
+//                }
 
-                val uriResIdList = listOf(R.string.media_url_mp4, R.string.media_url_mp3)
-                uriResIdList.forEach {
-                    exoPlayer.addMediaItem(MediaItem.fromUri(getString(it)))
-                }
+                val dashUrl = getString(R.string.media_url_dash)
+
+                //https://exoplayer.dev/media-items.html < mediaItemBuilderのことはここでみてね
+                val mediaItem = MediaItem.Builder()
+                    .setUri(dashUrl)
+                    /**
+                     * HLS (MimeTypes.APPLICATION_M3U8) および SmoothStreaming (MimeTypes.APPLICATION_SS) は、
+                     * 一般的に使用されているその他のアダプティブ ストリーミング フォーマットです。
+                     * どちらも ExoPlayer でサポートされています
+                     */
+                    .setMimeType(MimeTypes.APPLICATION_MPD)
+                    .build()
+
+                exoPlayer.setMediaItem(mediaItem)
                 exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
