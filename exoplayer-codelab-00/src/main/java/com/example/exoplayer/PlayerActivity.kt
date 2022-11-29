@@ -17,19 +17,73 @@ package com.example.exoplayer
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.example.exoplayer.databinding.ActivityPlayerBinding
 
 /**
  * A fullscreen activity to play audio or video streams.
  */
 class PlayerActivity : AppCompatActivity() {
-
-    private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {
+    private val binding by lazy(LazyThreadSafetyMode.NONE) {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
 
+    private var player: ExoPlayer? = null
+
+    private var playWhenReady = true
+    private var currentItem = 0
+    private var playbackPosition = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(viewBinding.root)
+        setContentView(binding.root)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initializePlayer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        hideSystemUi()
+    }
+
+    private fun initializePlayer() {
+        player = ExoPlayer.Builder(this)
+            .build()
+            .also { exoPlayer ->
+                binding.videoView.player = exoPlayer
+
+//                val mediaUri = getString(R.string.media_url_mp3)
+                val mediaUri = getString(R.string.media_url_mp4)
+                val mediaItem = MediaItem.fromUri(mediaUri)
+                exoPlayer.setMediaItem(mediaItem)
+                exoPlayer.playWhenReady = playWhenReady
+                exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.prepare()
+            }
+    }
+
+    private fun releasePlayer() {
+        player?.let { exo ->
+            playbackPosition = exo.currentPosition
+            currentItem = exo.currentMediaItemIndex
+            playWhenReady = exo.playWhenReady
+            exo.release()
+        }
+        player = null
+    }
+
+    private fun hideSystemUi() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, binding.videoView).let {
+            it.hide(WindowInsetsCompat.Type.systemBars())
+            it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
     }
 }
