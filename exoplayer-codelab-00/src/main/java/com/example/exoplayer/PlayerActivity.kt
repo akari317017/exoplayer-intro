@@ -53,6 +53,11 @@ class PlayerActivity : AppCompatActivity() {
         hideSystemUi()
     }
 
+    override fun onStop() {
+        super.onStop()
+        releasePlayer()
+    }
+
     private fun initializePlayer() {
         player = ExoPlayer.Builder(this)
             .build()
@@ -83,7 +88,8 @@ class PlayerActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, binding.videoView).let {
             it.hide(WindowInsetsCompat.Type.systemBars())
-            it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            it.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
 }
