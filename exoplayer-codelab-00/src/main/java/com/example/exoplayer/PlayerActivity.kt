@@ -18,6 +18,8 @@ package com.example.exoplayer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exoplayer.databinding.ActivityPlayerBinding
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.SimpleExoPlayer
 
 /**
  * A fullscreen activity to play audio or video streams.
@@ -27,8 +29,18 @@ class PlayerActivity : AppCompatActivity() {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
 
+    private var player: ExoPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+    }
+
+    private fun initializePlayer() {
+        player = ExoPlayer.Builder(this)
+            .build()
+            .also { exoPlayer ->
+                binding.playerView.player = exoPlayer
+            }
     }
 }
