@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
+import androidx.media3.common.util.Log
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.example.exoplayer.databinding.ActivityPlayerBinding
@@ -36,6 +37,9 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private var player: ExoPlayer? = null
+
+    //isPlayingが変更されたときに通知を受けたい場合は、onIsPlayingChangedをlistenすることができます。
+    private val playbackStateListener = playbackStateListener()
 
     private var playWhenReady = true
     private var currentItem = 0
@@ -77,13 +81,7 @@ class PlayerActivity : AppCompatActivity() {
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
-//                val uriResIdList = listOf(R.string.media_url_mp4, R.string.media_url_mp3)
-//                uriResIdList.forEach {
-//                    exoPlayer.addMediaItem(MediaItem.fromUri(getString(it)))
-//                }
-
                 val dashUrl = getString(R.string.media_url_dash)
-
                 //https://exoplayer.dev/media-items.html < mediaItemBuilderのことはここでみてね
                 val mediaItem = MediaItem.Builder()
                     .setUri(dashUrl)
@@ -96,9 +94,9 @@ class PlayerActivity : AppCompatActivity() {
                     .build()
 
                 exoPlayer.setMediaItem(mediaItem)
-                exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.addListener(playbackStateListener)
                 exoPlayer.prepare()
             }
     }
@@ -108,6 +106,7 @@ class PlayerActivity : AppCompatActivity() {
             playbackPosition = exo.currentPosition
             currentItem = exo.currentMediaItemIndex
             playWhenReady = exo.playWhenReady
+            exo.removeListener(playbackStateListener)
             exo.release()
         }
         player = null
@@ -120,5 +119,34 @@ class PlayerActivity : AppCompatActivity() {
             it.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+    }
+
+    private fun playbackStateListener() = object : Player.Listener {
+        /**
+         * ExoPlayer.STATE_IDLE : プレーヤーはインスタンス化されましたが、まだ準備されていません。
+         *
+         * ExoPlayer.STATE_BUFFERING : 十分なデータがバッファリングされていないため、プレーヤーは現在の位置から再生できません。
+         *     バッファリング中を知りたい？時とか？
+         *
+         * ExoPlayer.STATE_READY : プレーヤーが現在の位置からすぐに再生できる状態です。
+         *     つまり、プレーヤーの playWhenReady プロパティが true の場合、メディア再生が自動的に開始されます。
+         *     falseの場合、プレーヤーは一時停止されます。
+         *
+         * ExoPlayer.STATE_ENDED : プレーヤーがメディアの再生を終了しました。
+         */
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            val stateString = when (playbackState) {
+                ExoPlayer.STATE_IDLE -> "Idle"
+                ExoPlayer.STATE_BUFFERING -> "Buffering"
+                ExoPlayer.STATE_READY -> "Ready"
+                ExoPlayer.STATE_ENDED -> "Ended"
+                else -> "unKnownState"
+            }
+            Log.d(TAG, "changed state to $stateString")
+        }
+    }
+
+    companion object {
+        private const val TAG = "PlayerActivity"
     }
 }
