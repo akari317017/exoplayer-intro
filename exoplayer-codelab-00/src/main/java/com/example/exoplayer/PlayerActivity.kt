@@ -21,6 +21,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.exoplayer.databinding.ActivityPlayerBinding
 
@@ -58,16 +59,23 @@ class PlayerActivity : AppCompatActivity() {
         releasePlayer()
     }
 
+    /**
+     * playListはplayerにaddMediaItemでMediaItemを追加していくと作成できる。
+     * これによってシームレス(途切れない)再生が可能となる。
+     * バッファリング(データを取り込んでおく処理?)はバックグラウンドで処理される。
+     * そのため次のmediaItemに映った時にbufferingSpinnerが出ない
+     */
     private fun initializePlayer() {
         player = ExoPlayer.Builder(this)
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
 
-//                val mediaUri = getString(R.string.media_url_mp3)
-                val mediaUri = getString(R.string.media_url_mp4)
-                val mediaItem = MediaItem.fromUri(mediaUri)
-                exoPlayer.setMediaItem(mediaItem)
+                val uriResIdList = listOf(R.string.media_url_mp4, R.string.media_url_mp3)
+                uriResIdList.forEach {
+                    exoPlayer.addMediaItem(MediaItem.fromUri(getString(it)))
+                }
+                exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
                 exoPlayer.prepare()
